@@ -1782,8 +1782,9 @@ quiet_cmd_u-boot__ ?= LTO     $@
 		-T u-boot.lds $(u-boot-init)					\
 		-Wl,--start-group -Wl,--whole-archive				\
 			$(u-boot-main)						\
+			$(PLATFORM_LIBS)					\
 		-Wl,--no-whole-archive -Wl,--end-group				\
-		$(PLATFORM_LIBS) -Wl,-Map,u-boot.map;				\
+		-Wl,-Map,u-boot.map;						\
 		$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
 else
 quiet_cmd_u-boot__ ?= LD      $@

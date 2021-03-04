@@ -428,8 +428,9 @@ quiet_cmd_u-boot-spl ?= LTO     $@
 		-Wl,--start-group -Wl,--whole-archive				\
 			$(patsubst $(obj)/%,%,$(u-boot-spl-main))		\
 			$(patsubst $(obj)/%,%,$(u-boot-spl-platdata))		\
+			$(PLATFORM_LIBS)					\
 		-Wl,--no-whole-archive -Wl,--end-group				\
-		$(PLATFORM_LIBS) -Wl,-Map,$(SPL_BIN).map -o $(SPL_BIN)		\
+		-Wl,-Map,$(SPL_BIN).map -o $(SPL_BIN)				\
 			)
 else
 quiet_cmd_u-boot-spl ?= LD      $@
