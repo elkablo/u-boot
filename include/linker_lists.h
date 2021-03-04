@@ -88,7 +88,9 @@
  *           .y = 4,
  *   };
  */
-#define ll_entry_declare(_type, _name, _list) \
+#define ll_entry_declare(_type, _name, _list)	\
+	__lldecl(_type, _name, _list);		\
+	__ADDRESSABLE(__llname(_name, _list));	\
 	__lldecl(_type, _name, _list)
 
 /**
@@ -109,7 +111,9 @@
  *        { .x = 1, .y = 7 }
  *   };
  */
-#define ll_entry_declare_list(_type, _name, _list) \
+#define ll_entry_declare_list(_type, _name, _list)	\
+	__lldecl(_type, _name, _list)[];		\
+	__ADDRESSABLE(__llname(_name, _list));		\
 	__lldecl(_type, _name, _list)[]
 
 /*
