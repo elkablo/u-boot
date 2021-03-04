@@ -20,6 +20,27 @@
 #if !defined(__ASSEMBLY__)
 
 /**
+ * __llname() - Private macro expanding to symbol name for linker list entry
+ * @_name:	Name of the entry
+ * @_list:	name of the list. Should contain only characters allowed
+ *		in a C variable name!
+ */
+#define __llname(_name, _list) \
+		_u_boot_list_2_##_list##_2_##_name
+
+/**
+ * __lldecl() - Private macro expanding to declaration of linker list entry
+ * @_type:	Data type of the entry
+ * @_name:	Name of the entry
+ * @_list:	name of the list. Should contain only characters allowed
+ *		in a C variable name!
+ */
+#define __lldecl(_type, _name, _list)			\
+	_type __aligned(4) __attribute__((unused))	\
+	__section(".u_boot_list_2_"#_list"_2_"#_name)	\
+		__llname(_name, _list)
+
+/**
  * llsym() - Access a linker-generated array entry
  * @_type:	Data type of the entry
  * @_name:	Name of the entry
@@ -27,7 +48,7 @@
  *		in a C variable name!
  */
 #define llsym(_type, _name, _list) \
-		((_type *)&_u_boot_list_2_##_list##_2_##_name)
+		((_type *)&__llname(_name, _list))
 
 /**
  * ll_entry_declare() - Declare linker-generated array entry
@@ -67,10 +88,8 @@
  *           .y = 4,
  *   };
  */
-#define ll_entry_declare(_type, _name, _list)				\
-	_type _u_boot_list_2_##_list##_2_##_name __aligned(4)		\
-			__attribute__((unused))				\
-			__section(".u_boot_list_2_"#_list"_2_"#_name)
+#define ll_entry_declare(_type, _name, _list) \
+	__lldecl(_type, _name, _list)
 
 /**
  * ll_entry_declare_list() - Declare a list of link-generated array entries
@@ -90,10 +109,8 @@
  *        { .x = 1, .y = 7 }
  *   };
  */
-#define ll_entry_declare_list(_type, _name, _list)			\
-	_type _u_boot_list_2_##_list##_2_##_name[] __aligned(4)		\
-			__attribute__((unused))				\
-			__section(".u_boot_list_2_"#_list"_2_"#_name)
+#define ll_entry_declare_list(_type, _name, _list) \
+	__lldecl(_type, _name, _list)[]
 
 /*
  * We need a 0-byte-size type for iterator symbols, and the compiler
@@ -203,12 +220,11 @@
  *   ...
  *   struct my_sub_cmd *c = ll_entry_get(struct my_sub_cmd, my_sub_cmd, cmd_sub);
  */
-#define ll_entry_get(_type, _name, _list)				\
-	({								\
-		extern _type _u_boot_list_2_##_list##_2_##_name;	\
-		_type *_ll_result =					\
-			&_u_boot_list_2_##_list##_2_##_name;		\
-		_ll_result;						\
+#define ll_entry_get(_type, _name, _list)			\
+	({							\
+		extern _type __llname(_name, _list);		\
+		_type *_ll_result = &__llname(_name, _list);	\
+		_ll_result;					\
 	})
 
 /**
