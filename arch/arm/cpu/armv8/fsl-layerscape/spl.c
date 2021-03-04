@@ -40,7 +40,7 @@ u32 spl_boot_device(void)
 #ifdef CONFIG_SPL_BUILD
 
 /* Define board data structure */
-static struct bd_info bdata __attribute__ ((section(".data")));
+static struct bd_info bdata __section(".data");
 
 void spl_board_init(void)
 {
