@@ -5,10 +5,12 @@
 
 # If clock.c is compiled for Thumb2, then it fails on OMAP3530
 CFLAGS_clock.o += -marm
+CFLAGS_REMOVE_clock.o := $(LTO_CFLAGS)
 
 obj-y	:= lowlevel_init.o
 
 obj-y	+= board.o
+CFLAGS_REMOVE_board.o := $(LTO_CFLAGS)
 obj-y	+= boot.o
 obj-y	+= clock.o
 obj-y	+= sys_info.o
